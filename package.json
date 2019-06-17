@@ -13,8 +13,9 @@
   "dependencies": {
     "cross-env": "^5.2.0",
     "mbta-client": "^0.4.2",
+    "nuxt": "^2.4.0",
     "vue-i18n": "^7.3.2",
-    "nuxt": "^2.4.0"
+    "vue-select": "^3.1.0"
   },
   "devDependencies": {
     "node-sass": "^4.12.0",

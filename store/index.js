@@ -1,5 +1,3 @@
-import MBTA from 'mbta-client';
-
 export const state = () => ({
     stops: [],
     locales: ['en', 'ro'],
