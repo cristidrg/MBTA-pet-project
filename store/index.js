@@ -1,3 +1,5 @@
+import { mapState } from "vuex";
+
 export const state = () => ({
     stops: [],
     locales: ['en', 'ro'],
@@ -32,10 +34,11 @@ export const mutations = {
 
 export const actions = {
     nuxtServerInit({ commit }, { app }) {
-        return Promise.all(Object.values(MBTA_LINES)
-            .map( ({ name }) => app.mbta.fetchStopsByRoute(name)
-                .then(stop => stop.map(mapResponseToStore(name))))
-        ).then(values => {
+        return Promise.all([ // TODO: CLEAN ^^
+            app.mbta.fetchStopsByRoute('Orange').then(stop => stop.map(mapResponseToStore('Orange'))),
+            app.mbta.fetchStopsByRoute('Red').then(stop => stop.map(mapResponseToStore('Red'))),
+            app.mbta.fetchStopsByRoute('Blue').then(stop => stop.map(mapResponseToStore('Blue')))
+        ]).then(values => {
             commit('initStops', values.flat())
         })
     }

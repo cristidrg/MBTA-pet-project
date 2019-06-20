@@ -1,10 +1,42 @@
 <script>
+import { mapState } from "vuex";
 import SelectComponent from "vue-select";
 import "vue-select/dist/vue-select.css";
 
+const ALL = 'All';
+const LINES = ['Orange', 'Red', 'Blue']; // TODO: Reuse constant from data
+
 export default {
+  name: "Stations",
+
+  data() {
+    return {
+      lineFilter: ALL,
+      LINES,
+      ALL
+    }
+  },
+
   components: {
     SelectComponent
+  },
+
+  computed: {
+    filteredStops() {
+      if (this.lineFilter == ALL) {
+        return [...this.stops].sort((a,b) => a.name - b.name); // TODO : clean 
+      } else {
+        return [...this.stops].filter(stop => stop.line == this.lineFilter);
+      }
+    },
+
+    ...mapState(['stops'])
+  },
+
+  methods: {
+    setLineFilter(value) {
+      this.lineFilter = value;
+    }
   }
 };
 </script>
@@ -16,26 +48,31 @@ export default {
       <div class="line"/>
 
       <select-component
-        @input="e => e"
+        @input="setLineFilter"
         class="filters__station"
-        value="ALL"
+        :value="lineFilter"
         :clearable="false"
         :searchable="false"
+        :options="[ALL, ...LINES]"
       />
       <div class="line"/>
     </div>
-
+ 
     <ul>
-        <li class="" v-for="item in items">{{ }}</li>
+      <li v-for="stop in filteredStops" :class="`stop ${stop.line}`" :key="stop.name + stop.line">{{ stop.name }}</li>
     </ul>
   </section>
 </template>
+
 <style lang="scss" scoped>
+
 .container {
   background-color: $white;
   border-radius: 15px 15px 0px 0px;
   width: 100%;
   margin-top: 15px;
+
+  max-width: 500px; //TODO: Delete this line
 }
 
 .title {
@@ -62,6 +99,51 @@ export default {
   background-color: $gray01;
   width: 100%;
 }
+
+.stop {
+  @include header-3;
+
+  display: flex;
+  align-items: center;
+  padding: 20px 25px 20px 35px;
+  margin-left: 15px;
+
+  &::before {
+    content: '';
+    background-color: white;
+    display: block;
+    height: 25px;
+    width: 25px;
+    border-radius: 25px;
+    position: absolute;
+    left: 5px;
+  }
+  
+  &.Orange {
+    border-left: 5px solid orange;
+  }
+
+  &.Orange::before {
+    border: 3px solid orange;
+  }
+
+  &.Red {
+    border-left: 5px solid Red;
+  }
+
+  &.Red::before {
+    border: 3px solid Red;
+  }
+
+  &.Blue {
+    border-left: 5px solid Blue;
+  }
+
+  &.Blue::before {
+    border: 3px solid Blue;
+  }
+}
+
 </style>
 
 <!-- Overrides for the plugin -->
