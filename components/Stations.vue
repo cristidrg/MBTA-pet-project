@@ -24,9 +24,10 @@ export default {
   computed: {
     filteredStops() {
       if (this.lineFilter == ALL) {
-        return [...this.stops].sort((a,b) => a.name - b.name); // TODO : clean 
+        return Object.values(this.stops).sort((a,b) => a.name.localeCompare(b.name));
       } else {
-        return [...this.stops].filter(stop => stop.line == this.lineFilter);
+        return Object.values(this.stops).filter(stop => stop.line == this.lineFilter)
+          .sort((a,b) => a.order - b.order);
       }
     },
 
@@ -59,7 +60,9 @@ export default {
     </div>
  
     <ul>
-      <li v-for="stop in filteredStops" :class="`stop ${stop.line}`" :key="stop.name + stop.line">{{ stop.name }}</li>
+      <li v-for="stop in filteredStops" :class="`stop ${stop.line}`" :key="stop.name + stop.line">
+        <nuxt-link class="link" :to="`stations/${stop.id}`">{{ stop.name }}</nuxt-link>
+      </li>
     </ul>
   </section>
 </template>
@@ -98,6 +101,14 @@ export default {
   display: block;
   background-color: $gray01;
   width: 100%;
+}
+
+.link {
+  color: black;
+  text-decoration: none;
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 .stop {

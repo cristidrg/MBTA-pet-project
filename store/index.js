@@ -3,7 +3,11 @@ import { mapState } from "vuex";
 export const state = () => ({
     stops: [],
     locales: ['en', 'ro'],
-    locale: 'en'
+    locale: 'en',
+    userPosition: {
+        xCoord: '',
+        yCoord: ''
+    }
 });
 
 export const MBTA_LINES = {
@@ -25,9 +29,14 @@ export const mutations = {
     initStops (state, payload) {
         state.stops = payload
     },
-    set_lang (state, locale) {
+    setLang (state, locale) {
         if (state.locales.indexOf(locale) !== -1) {
             state.locale = locale
+        }
+    },
+    updateSchedules (state, {id, schedules}) {
+        if (state.stops[id]) {
+            state.stops[id].schedules = schedules
         }
     }
 };
@@ -39,7 +48,12 @@ export const actions = {
             app.mbta.fetchStopsByRoute('Red').then(stop => stop.map(mapResponseToStore('Red'))),
             app.mbta.fetchStopsByRoute('Blue').then(stop => stop.map(mapResponseToStore('Blue')))
         ]).then(values => {
-            commit('initStops', values.flat())
+            const stops = values.flat().reduce((map, curr) => {
+                map[curr.id] = curr;
+                return map;
+            }, {});
+
+            commit('initStops', stops);
         })
     }
 }
