@@ -38,6 +38,7 @@ export default {
   */
   styleResources: {
     scss: [
+       '@/assets/scss/_vars.scss',
        '@/assets/scss/_colors.scss',
        '@/assets/scss/_typography.scss',
     ]

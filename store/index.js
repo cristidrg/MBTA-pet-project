@@ -34,6 +34,9 @@ export const mutations = {
             state.locale = locale
         }
     },
+    setUserPosition (state, payload) {
+        state.userPosition = payload
+    },
     updateSchedules (state, {id, schedules}) {
         if (state.stops[id]) {
             state.stops[id].schedules = schedules
@@ -43,7 +46,7 @@ export const mutations = {
 
 export const actions = {
     nuxtServerInit({ commit }, { app }) {
-        return Promise.all([ // TODO: CLEAN ^^
+        return Promise.all([
             app.mbta.fetchStopsByRoute('Orange').then(stop => stop.map(mapResponseToStore('Orange'))),
             app.mbta.fetchStopsByRoute('Red').then(stop => stop.map(mapResponseToStore('Red'))),
             app.mbta.fetchStopsByRoute('Blue').then(stop => stop.map(mapResponseToStore('Blue')))
@@ -58,7 +61,7 @@ export const actions = {
     }
 }
 
-const mapResponseToStore = (line) => (stop, index,) => ({
+const mapResponseToStore = (line) => (stop, index) => ({
     order: index,
     line,
     ...stop

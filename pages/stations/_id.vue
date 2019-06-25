@@ -1,14 +1,33 @@
 <template>
     <div>
-        <nuxt-link to="/">Back</nuxt-link>
+        <div class="station-indiv">
+            <p :class="`title ${station.line}`">{{ station.name }}</p>
+            <div class="timetable">
+                <div>
+                    <p class="timetable-header"> Inbound</p>
+                    <ul>
+                        <li v-for="schedule in station.schedules.filter(s => s.directionId == 0)" class="schedule">
+                            {{ schedule.departureTime }}
+                        </li>
+                    </ul>
+                </div>
 
-        <p>{{ station.name }}</p>
-        <p>{{ station.line }}</p>
-        <textarea>{{ station.schedules }} </textarea>
+                <div>
+                    <p class="timetable-header"> Outbound</p>
+                    <ul>
+                        <li v-for="schedule in station.schedules.filter(s => s.directionId == 1)" class="schedule">
+                            {{ schedule.departureTime }}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <stations />
     </div>
 </template>
 <script>
 import { mapState } from "vuex";
+import Stations from '~/components/Stations.vue';
 
 export default {
     name: "Station",
@@ -17,6 +36,10 @@ export default {
         return {
             activeId: 1
         }
+    },
+
+    components: {
+        Stations
     },
 
     computed: {
@@ -49,3 +72,61 @@ export default {
 </script>
 
 
+
+<style lang="scss" scoped>
+
+.station-indiv {
+    min-height: 275px;
+    border-bottom: 2px solid #f4f4f4;
+}
+.container {
+  background-color: $white;
+  border-radius: 15px 15px 0px 0px;
+  width: 100%;
+  margin-top: 15px;
+
+  @media screen and (min-width: $sm) {
+    display: flex;
+    flex-wrap: wrap;
+  }
+}
+
+.title {
+  @include header;
+
+  text-align: center;
+  padding: 15px;
+  text-decoration: underline;
+
+   &.Orange {
+     text-decoration-color: orange;
+    }
+
+ 
+
+  &.Red {
+    text-decoration-color:  Red;
+  }
+
+
+  &.Blue {
+    text-decoration-color: Blue;
+  }
+
+}
+
+.timetable {
+    display: flex;
+    justify-content: space-around;
+}
+
+.timetable-header {
+    @include header-3;
+}
+
+.schedule {
+    @include header-4;
+    padding: 10px 0;
+}
+    
+</style>

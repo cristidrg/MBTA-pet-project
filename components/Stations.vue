@@ -1,3 +1,26 @@
+<template>
+  <section class="container">
+    <p class="title">{{ $t('stations.title') }}</p>
+    <div class="filters">
+      Showing stations from 
+      <select-component
+        @input="setLineFilter"
+        class="filters__station"
+        :value="lineFilter"
+        :clearable="false"
+        :searchable="false"
+        :options="[ALL, ...LINES]"
+      /> stations 
+    </div>
+ 
+    <ul class="list">
+      <li v-for="stop in filteredStops" :class="`stop ${stop.line}`" :key="stop.name + stop.line">
+        <nuxt-link class="link" :to="`/stations/${stop.id}`">{{ stop.name }}</nuxt-link>
+      </li>
+    </ul>
+  </section>
+</template>
+
 <script>
 import { mapState } from "vuex";
 import SelectComponent from "vue-select";
@@ -42,31 +65,6 @@ export default {
 };
 </script>
 
-<template>
-  <section class="container">
-    <p class="title">{{ $t('stations.title') }}</p>
-    <div class="filters">
-      <div class="line"/>
-
-      <select-component
-        @input="setLineFilter"
-        class="filters__station"
-        :value="lineFilter"
-        :clearable="false"
-        :searchable="false"
-        :options="[ALL, ...LINES]"
-      />
-      <div class="line"/>
-    </div>
- 
-    <ul>
-      <li v-for="stop in filteredStops" :class="`stop ${stop.line}`" :key="stop.name + stop.line">
-        <nuxt-link class="link" :to="`stations/${stop.id}`">{{ stop.name }}</nuxt-link>
-      </li>
-    </ul>
-  </section>
-</template>
-
 <style lang="scss" scoped>
 
 .container {
@@ -75,13 +73,15 @@ export default {
   width: 100%;
   margin-top: 15px;
 
-  max-width: 500px; //TODO: Delete this line
+  @media screen and (min-width: $sm) {
+    display: flex;
+    flex-wrap: wrap;
+  }
 }
 
 .title {
   @include header;
 
-  text-transform: uppercase;
   text-align: center;
   padding: 15px;
 }
@@ -89,18 +89,26 @@ export default {
 .filters {
   display: flex;
   align-items: center;
+  justify-content: center;
+  padding: 15px;
 
   &__station {
-    @include header-2;
-    min-width: 300px;
+    min-width: 35px;
+  }
+
+  @media screen and (min-width: $sm) {
+    margin-left: auto;
+    margin-right: 15px;
+    padding: 0;
   }
 }
 
-.line {
-  height: 4px;
-  display: block;
-  background-color: $gray01;
-  width: 100%;
+.list {
+  padding: 5px 15px;
+
+   @media screen and (min-width: $sm) {
+    column-count: 4;
+   }
 }
 
 .link {
@@ -113,21 +121,11 @@ export default {
 
 .stop {
   @include header-3;
-
-  display: flex;
-  align-items: center;
-  padding: 20px 25px 20px 35px;
-  margin-left: 15px;
+  display: inline-block;
+  width: 100%;
+  padding: 10px 0 10px 10px;
 
   &::before {
-    content: '';
-    background-color: white;
-    display: block;
-    height: 25px;
-    width: 25px;
-    border-radius: 25px;
-    position: absolute;
-    left: 5px;
   }
   
   &.Orange {
