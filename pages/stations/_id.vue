@@ -57,10 +57,14 @@ export default {
     validate ({ params, store }) { 
         return store.state.stops[params.id];
     },
-
+    
     fetch({ store, params, app}) {
-        this.activeId = params.id
-        return app.mbta.fetchSchedules({stop: params.id, sort: 'arrival_time', limit: 5})
+        this.activeId = params.id;
+        let minutes = new Date().getMinutes();
+        if (minutes < 10) { 
+            minutes = "0" + minutes
+        };
+        return app.mbta.fetchSchedules({descending: false, min_time: `${new Date().getHours()}%3A${minutes}`, stop: params.id, sort: 'arrival_time', limit: 5})
             .then(response => response.data.map(({ attributes }) => ({
                 arrivalTime: new Date(attributes.arrival_time).toLocaleString(),
                 departureTime: new Date(attributes.departure_time).toLocaleString(),
